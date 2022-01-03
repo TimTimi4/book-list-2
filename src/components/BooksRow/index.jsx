@@ -44,7 +44,7 @@ const books = [
 ]
 
 const StyledLIkeIcon = styled(Like)`
-  color: ${({ theme }) => theme.colors.unactiveIcon};
+  color: ${({ theme, isFavorite }) => (isFavorite ? theme.colors.activeIcon : theme.colors.unactiveIcon)};
   cursor: pointer;
 `
 
@@ -78,9 +78,9 @@ const BooksRow = ({ onClick }) => (
           >
             <TableCell align="left">{book.name}</TableCell>
             <TableCell align="left">{book.author}</TableCell>
-            <TableCell align="center"><StyledLIkeIcon /></TableCell>
+            <TableCell align="center"><StyledLIkeIcon isFavorite={book.isFavorite} /></TableCell>
             <TableCell align="center"><StyledEditIcon onClick={onClick} /></TableCell>
-            <TableCell align="center"><StyledTrashIcon /></TableCell>
+            <TableCell align="center"><StyledTrashIcon i /></TableCell>
           </TableRow>
         ))}
       </TableBody>

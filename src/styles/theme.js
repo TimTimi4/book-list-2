@@ -9,6 +9,7 @@ const theme = {
       primaryText: '#B1B1B1',
       secondaryText: '#EB434D',
       unactiveIcon: '#B1B1B1',
+      activeIcon: '#EB434D',
     },
   sizes:
     {
