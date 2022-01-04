@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Theme from './styles/theme'
 import Header from './components/Header'
 import Container from './components/Container'
@@ -10,11 +10,18 @@ import EditModal from './components/EditModal'
 
 const StyledBtn = styled(Btn)`
   margin: 30px 30px 0px auto;
-`
+  `
 
 const App = () => {
   const [isShowCreateModal, setShowCreateModal] = useState(false)
   const [isShowEditModal, setShowEditModal] = useState(false)
+  const [books, setBooks] = useState([])
+
+  useEffect(() => {
+    fetch('http://localhost:1717/books')
+      .then((res) => res.json())
+      .then((data) => setBooks(data))
+  }, [])
 
   return (
     <Theme>
@@ -25,6 +32,7 @@ const App = () => {
       </StyledBtn>
       <Container>
         <BooksRow
+          books={books}
           onClick={() => setShowEditModal(true)}
         />
         <CreateModal

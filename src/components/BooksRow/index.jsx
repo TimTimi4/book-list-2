@@ -10,41 +10,8 @@ import Like from '../Icons/Like'
 import Trash from '../Icons/Trash'
 import Edit from '../Icons/Edit'
 
-const books = [
-  {
-    id: 'tt2462gd3',
-    name: 'Гарри Поттер и философский камень',
-    author: 'Джоан Роулинг',
-    isFavorite: false,
-  },
-  {
-    id: '373yyr74y',
-    name: 'Гарри Поттер и тайная комната',
-    author: 'Джоан Роулинг',
-    isFavorite: false,
-  },
-  {
-    id: '56734jfjjf',
-    name: 'Охота на овец',
-    author: 'Харуки Мураками',
-    isFavorite: true,
-  },
-  {
-    id: '74hg47wjuGG',
-    name: 'Война и мир',
-    author: 'Лев Толстой',
-    isFavorite: false,
-  },
-  {
-    id: '36ggf64gd',
-    name: 'О дивный новый мир',
-    author: 'Олдос Хаксли',
-    isFavorite: false,
-  },
-]
-
 const StyledLIkeIcon = styled(Like)`
-  color: ${({ theme, isFavorite }) => (isFavorite ? theme.colors.activeIcon : theme.colors.unactiveIcon)};
+  color: ${({ theme, $isFavorite }) => ($isFavorite ? theme.colors.activeIcon : theme.colors.unactiveIcon)};
   cursor: pointer;
 `
 
@@ -57,7 +24,7 @@ const StyledTrashIcon = styled(Trash)`
   cursor: pointer;
 `
 
-const BooksRow = ({ onClick }) => (
+const BooksRow = ({ onClick, books }) => (
   <TableContainer component={Paper}>
     <Table sx={{ minWidth: 650 }} aria-label="a dense table">
       <TableHead>
@@ -78,9 +45,9 @@ const BooksRow = ({ onClick }) => (
           >
             <TableCell align="left">{book.name}</TableCell>
             <TableCell align="left">{book.author}</TableCell>
-            <TableCell align="center"><StyledLIkeIcon isFavorite={book.isFavorite} /></TableCell>
+            <TableCell align="center"><StyledLIkeIcon $isFavorite={book.isFavorite} /></TableCell>
             <TableCell align="center"><StyledEditIcon onClick={onClick} /></TableCell>
-            <TableCell align="center"><StyledTrashIcon i /></TableCell>
+            <TableCell align="center"><StyledTrashIcon /></TableCell>
           </TableRow>
         ))}
       </TableBody>
