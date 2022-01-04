@@ -16,12 +16,23 @@ const App = () => {
   const [isShowCreateModal, setShowCreateModal] = useState(false)
   const [isShowEditModal, setShowEditModal] = useState(false)
   const [books, setBooks] = useState([])
+  const [editState, setEditState] = useState(null)
 
-  useEffect(() => {
+  // Функция для других компонентов, для отображения состояния на сервере
+  const getBooks = () => {
     fetch('http://localhost:1717/books')
       .then((res) => res.json())
       .then((data) => setBooks(data))
+  }
+
+  useEffect(() => {
+    getBooks()
   }, [])
+
+  const handledit = (book) => {
+    setShowEditModal(true)
+    setEditState(book)
+  }
 
   return (
     <Theme>
@@ -33,14 +44,20 @@ const App = () => {
       <Container>
         <BooksRow
           books={books}
-          onClick={() => setShowEditModal(true)}
+          onEdit={handledit}
+          getBooks={getBooks}
         />
         <CreateModal
+          getBooks={getBooks}
+          books={books}
           isShow={isShowCreateModal}
           onClose={() => setShowCreateModal(false)}
         />
         <EditModal
+          getBooks={getBooks}
           isShow={isShowEditModal}
+          editState={editState}
+          setEditState={setEditState}
           onClose={() => setShowEditModal(false)}
         />
       </Container>

@@ -39,35 +39,76 @@ const StyledLIkeIcon = styled(Like)`
   position: absolute;
   top:10px;
   left: 8px;
-  color: ${({ theme }) => theme.colors.unactiveIcon};
+  color: ${({ theme, $isFavorite }) => ($isFavorite ? theme.colors.activeIcon : theme.colors.unactiveIcon)};
   cursor: pointer;
 `
 
-const EditModal = ({ isShow, onClose }) => (
-  <Modal
-    isShow={isShow}
-    onClose={onClose}
-  >
-    <StyledForm action="#">
-      <StyledInput
-        type="text"
-        name="name"
-        placeholder="Book Name"
-      />
-      <StyledInput
-        type="text"
-        name="author"
-        placeholder="Author"
-      />
-      <StyledButton
-        type="submit"
-      >Save
-      </StyledButton>
-      <IconBox>
-        <StyledLIkeIcon />
-      </IconBox>
-    </StyledForm>
-  </Modal>
-)
+const EditModal = ({ isShow, onClose, setEditState, editState, getBooks }) => {
+  const handlechange = (e) => {
+    const { name, value } = e.target
+    setEditState({
+      ...editState,
+      [name]: value,
+    })
+  }
+
+  const handleclick = () => {
+    setEditState({
+      ...editState,
+      isFavorite: !editState.isFavorite,
+    })
+  }
+
+  const saveChanges = () => {
+    const body = {
+      ...editState,
+    }
+    delete body.id
+    fetch(`http://localhost:1717/books/update/${editState.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => getBooks())
+    onClose()
+  }
+
+  return (
+    <Modal
+      isShow={isShow}
+      onClose={onClose}
+    >
+      <StyledForm action="#">
+        <StyledInput
+          type="text"
+          name="name"
+          placeholder="Book Name"
+          value={editState ? editState.name : ''}
+          onChange={handlechange}
+        />
+        <StyledInput
+          type="text"
+          name="author"
+          placeholder="Author"
+          value={editState ? editState.author : ''}
+          onChange={handlechange}
+        />
+        <StyledButton
+          type="submit"
+          onClick={saveChanges}
+        >Save
+        </StyledButton>
+        <IconBox>
+          <StyledLIkeIcon
+            onClick={handleclick}
+            $isFavorite={!!editState?.isFavorite}
+          />
+        </IconBox>
+      </StyledForm>
+    </Modal>
+  )
+}
 
 export default EditModal

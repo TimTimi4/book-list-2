@@ -24,35 +24,57 @@ const StyledTrashIcon = styled(Trash)`
   cursor: pointer;
 `
 
-const BooksRow = ({ onClick, books }) => (
-  <TableContainer component={Paper}>
-    <Table sx={{ minWidth: 650 }} aria-label="a dense table">
-      <TableHead>
-        <TableRow>
-          <TableCell align="left">Book Name</TableCell>
-          <TableCell align="left">Author</TableCell>
-          <TableCell align="center">Like</TableCell>
-          <TableCell align="center">Edit</TableCell>
-          <TableCell align="center">Delete</TableCell>
+const BooksRow = ({ onEdit, books, getBooks }) => {
+  const handleClick = (book) => {
+    fetch(`http://localhost:1717/books/update/${book.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ isFavorite: !book.isFavorite }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => getBooks())
+  }
 
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {books.map((book) => (
-          <TableRow
-            key={book.name}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          >
-            <TableCell align="left">{book.name}</TableCell>
-            <TableCell align="left">{book.author}</TableCell>
-            <TableCell align="center"><StyledLIkeIcon $isFavorite={book.isFavorite} /></TableCell>
-            <TableCell align="center"><StyledEditIcon onClick={onClick} /></TableCell>
-            <TableCell align="center"><StyledTrashIcon /></TableCell>
+  const handleDelete = (book) => {
+    fetch(`http://localhost:1717/books/delete/${book.id}`, {
+      method: 'DELETE',
+    })
+      .then(() => getBooks())
+  }
+  return (
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="a dense table">
+        <TableHead>
+          <TableRow>
+            <TableCell align="left">Book Name</TableCell>
+            <TableCell align="left">Author</TableCell>
+            <TableCell align="center">Like</TableCell>
+            <TableCell align="center">Edit</TableCell>
+            <TableCell align="center">Delete</TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
-)
+        </TableHead>
+        <TableBody>
+          {books.map((book) => (
+            <TableRow
+              key={book.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell align="left">{book.name}</TableCell>
+              <TableCell align="left">{book.author}</TableCell>
+              <TableCell align="center"><StyledLIkeIcon
+                onClick={() => handleClick(book)}
+                $isFavorite={book.isFavorite}
+              />
+              </TableCell>
+              <TableCell align="center"><StyledEditIcon onClick={() => onEdit(book)} /></TableCell>
+              <TableCell align="center"><StyledTrashIcon onClick={() => handleDelete(book)} /></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  )
+}
 
 export default BooksRow

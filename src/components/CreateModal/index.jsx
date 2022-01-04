@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { useState } from 'react'
 import Modal from '../Modal'
 import Button from '../Button'
 
@@ -24,29 +25,60 @@ const StyledInput = styled.input`
 const StyledButton = styled(Button)`
   margin: 20px 0px 0px 0px;
 `
+const CreateModal = ({ isShow, onClose, getBooks }) => {
+  const [form, setForm] = useState({
+    name: '',
+    author: '',
+  })
 
-const CreateModal = ({ isShow, onClose }) => (
-  <Modal
-    isShow={isShow}
-    onClose={onClose}
-  >
-    <StyledForm action="#">
-      <StyledInput
-        type="text"
-        name="name"
-        placeholder="Book Name"
-      />
-      <StyledInput
-        type="text"
-        name="author"
-        placeholder="Author"
-      />
-      <StyledButton
-        type="submit"
-      >Add Book
-      </StyledButton>
-    </StyledForm>
-  </Modal>
-)
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm({
+      ...form,
+      [name]: value,
+    })
+  }
+
+  const addBook = () => {
+    fetch('http://localhost:1717/books/create', {
+      method: 'POST',
+      body: JSON.stringify(form),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => getBooks())
+    onClose()
+  }
+
+  return (
+    <Modal
+      isShow={isShow}
+      onClose={onClose}
+    >
+      <StyledForm action="#">
+        <StyledInput
+          type="text"
+          name="name"
+          placeholder="Book Name"
+          value={form.name}
+          onChange={handleChange}
+        />
+        <StyledInput
+          type="text"
+          name="author"
+          placeholder="Author"
+          value={form.author}
+          onChange={handleChange}
+        />
+        <StyledButton
+          type="submit"
+          onClick={addBook}
+        >Add Book
+        </StyledButton>
+      </StyledForm>
+    </Modal>
+  )
+}
 
 export default CreateModal
