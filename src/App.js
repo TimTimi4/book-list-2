@@ -17,6 +17,10 @@ const App = () => {
     isShowCreateModal: false,
     isShowEditModal: false,
     books: [],
+    formCreateModal: {
+      name: '',
+      author: '',
+    },
   }
   function reducer(state, action) {
     switch (action.type) {
@@ -35,17 +39,55 @@ const App = () => {
           ...state,
           books: action.payload,
         }
+      case 'FILL_CREATE_MODAL':
+        return {
+          ...state,
+          formCreateModal: action.payload,
+        }
+      case 'ADD_BOOK':
+        return {
+          ...state,
+          body: action.payload,
+        }
       default:
         throw new Error()
     }
   }
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  useEffect(() => {
+  const getBooks = () => {
     fetch('http://localhost:1717/books')
       .then((res) => res.json())
       .then((data) => dispatch({ type: 'GET_BOOKS', payload: data }))
+  }
+
+  useEffect(() => {
+    getBooks()
   }, [])
+
+  const hangdleFillCreateModal = (e) => {
+    const { name, value } = e.target
+    dispatch({ type: 'FILL_CREATE_MODAL',
+      payload: {
+        ...state.formCreateModal,
+        [name]: value,
+      },
+    })
+  }
+
+  const addBook = () => {
+    dispatch({ type: 'ADD_BOOK' })
+    fetch('http://localhost:1717/books/create', {
+      method: 'POST',
+      body: JSON.stringify(state.formCreateModal),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => getBooks())
+    dispatch({ type: 'SET_SHOW_CREATE_MODAL', payload: false })
+  }
+  console.log(state)
 
   return (
     <Theme>
@@ -62,6 +104,8 @@ const App = () => {
         <CreateModal
           isShow={state.isShowCreateModal}
           onClose={() => dispatch({ type: 'SET_SHOW_CREATE_MODAL', payload: false })}
+          hangdleFillCreateModal={hangdleFillCreateModal}
+          addBook={addBook}
         />
         <EditModal
           isShow={state.isShowEditModal}
