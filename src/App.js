@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useState, useEffect } from 'react'
+import { useReducer, useEffect } from 'react'
 import Theme from './styles/theme'
 import Header from './components/Header'
 import Container from './components/Container'
@@ -13,35 +13,59 @@ const StyledBtn = styled(Btn)`
   `
 
 const App = () => {
-  const [isShowCreateModal, setShowCreateModal] = useState(false)
-  const [isShowEditModal, setShowEditModal] = useState(false)
-  const [books, setBooks] = useState([])
+  const initialState = {
+    isShowCreateModal: false,
+    isShowEditModal: false,
+    books: [],
+  }
+  function reducer(state, action) {
+    switch (action.type) {
+      case 'SET_SHOW_CREATE_MODAL':
+        return {
+          ...state,
+          isShowCreateModal: action.payload,
+        }
+      case 'SET_SHOW_EDIT_MODAL':
+        return {
+          ...state,
+          isShowEditModal: action.payload,
+        }
+      case 'GET_BOOKS':
+        return {
+          ...state,
+          books: action.payload,
+        }
+      default:
+        throw new Error()
+    }
+  }
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
     fetch('http://localhost:1717/books')
       .then((res) => res.json())
-      .then((data) => setBooks(data))
+      .then((data) => dispatch({ type: 'GET_BOOKS', payload: data }))
   }, [])
 
   return (
     <Theme>
       <Header logo="BookList" title="Books" />
       <StyledBtn
-        onClick={() => setShowCreateModal(true)}
+        onClick={() => dispatch({ type: 'SET_SHOW_CREATE_MODAL', payload: true })}
       >Add Book
       </StyledBtn>
       <Container>
         <BooksRow
-          books={books}
-          onClick={() => setShowEditModal(true)}
+          books={state.books}
+          onClick={() => dispatch({ type: 'SET_SHOW_EDIT_MODAL', payload: true })}
         />
         <CreateModal
-          isShow={isShowCreateModal}
-          onClose={() => setShowCreateModal(false)}
+          isShow={state.isShowCreateModal}
+          onClose={() => dispatch({ type: 'SET_SHOW_CREATE_MODAL', payload: false })}
         />
         <EditModal
-          isShow={isShowEditModal}
-          onClose={() => setShowEditModal(false)}
+          isShow={state.isShowEditModal}
+          onClose={() => dispatch({ type: 'SET_SHOW_EDIT_MODAL', payload: false })}
         />
       </Container>
     </Theme>
