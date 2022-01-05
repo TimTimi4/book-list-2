@@ -46,7 +46,7 @@ const StyledLIkeIcon = styled(Like)`
 const EditModal = ({
   isShow,
   onClose,
-  handleFillEditModal,
+  handleFillEditForm,
   editState,
   saveEdit,
   handleClickFavoriteEditModal,
@@ -61,14 +61,14 @@ const EditModal = ({
         name="name"
         placeholder="Book Name"
         value={editState ? editState.name : ''}
-        onChange={handleFillEditModal}
+        onChange={handleFillEditForm}
       />
       <StyledInput
         type="text"
         name="author"
         placeholder="Author"
         value={editState ? editState.author : ''}
-        onChange={handleFillEditModal}
+        onChange={handleFillEditForm}
       />
       <StyledButton
         type="submit"
@@ -84,5 +84,4 @@ const EditModal = ({
     </StyledForm>
   </Modal>
 )
-
 export default EditModal

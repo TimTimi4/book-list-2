@@ -25,7 +25,7 @@ const StyledButton = styled(Button)`
   margin: 20px 0px 0px 0px;
 `
 
-const CreateModal = ({ isShow, onClose, handleFillCreateModal, addBook }) => (
+const CreateModal = ({ isShow, onClose, handleFillCreateForm, addBook }) => (
   <Modal
     isShow={isShow}
     onClose={onClose}
@@ -35,13 +35,13 @@ const CreateModal = ({ isShow, onClose, handleFillCreateModal, addBook }) => (
         type="text"
         name="name"
         placeholder="Book Name"
-        onChange={handleFillCreateModal}
+        onChange={handleFillCreateForm}
       />
       <StyledInput
         type="text"
         name="author"
         placeholder="Author"
-        onChange={handleFillCreateModal}
+        onChange={handleFillCreateForm}
       />
       <StyledButton
         type="submit"

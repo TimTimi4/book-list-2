@@ -14,66 +14,67 @@ const StyledBtn = styled(Btn)`
 
 const App = () => {
   const initialState = {
-    isShowCreateModal: false,
-    isShowEditModal: false,
     books: [],
-    formCreateModal: {
-      name: '',
-      author: '',
+    createModal: {
+      isShow: false,
+      form: {
+        name: '',
+        author: '',
+      },
     },
-    editState: null,
+    editModal: {
+      isShow: false,
+      form: {
+        name: '',
+        author: '',
+        isFavorite: false,
+      },
+    },
   }
   function reducer(state, action) {
     switch (action.type) {
-      case 'SET_SHOW_CREATE_MODAL':
+      case 'CREATE_MODAL_SET_SHOW':
         return {
           ...state,
-          isShowCreateModal: action.payload,
+          createModal: {
+            isShow: action.isShow,
+            form: initialState.createModal.form,
+          },
         }
-      case 'SET_SHOW_EDIT_MODAL':
+      case 'EDIT_MODAL_SET_SHOW':
         return {
           ...state,
-          isShowEditModal: action.payload,
+          editModal: {
+            isShow: action.isShow,
+            form: initialState.createModal.form,
+          },
         }
-      case 'GET_BOOKS':
+      case 'CREATE_MODAL_CHANGE_FORM':
         return {
           ...state,
-          books: action.payload,
+          createModal: {
+            ...state.createModal,
+            form: {
+              ...state.createModal.form,
+              [action.fieldName]: action.value,
+            },
+          },
         }
-      case 'FILL_CREATE_MODAL':
+      case 'EDIT_MODAL_CHANGE_FORM':
         return {
           ...state,
-          formCreateModal: action.payload,
+          editModal: {
+            ...state.editModal,
+            form: {
+              ...state.editModal.form,
+              [action.fieldName]: action.value,
+            },
+          },
         }
-      case 'ADD_BOOK':
+      case 'GET_BOOKS_SUCCESS':
         return {
           ...state,
-          body: action.payload,
-        }
-      case 'FILL_EDIT_MODAL':
-        return {
-          ...state,
-          editState: action.payload,
-        }
-      case 'OPEN_EDIT_MODAL':
-        return {
-          ...state,
-          editState: action.payload,
-        }
-      case 'SAVE_EDIT_BOOK':
-        return {
-          ...state,
-          body: action.payload,
-        }
-      case 'LIKE_BOOK':
-        return {
-          ...state,
-          editState: action.payload,
-        }
-      case 'DELETE_BOOK':
-        return {
-          ...state,
-          editState: action.payload,
+          books: action.data,
         }
       default:
         throw new Error()
@@ -85,62 +86,13 @@ const App = () => {
   const getBooks = () => {
     fetch('http://localhost:1717/books')
       .then((res) => res.json())
-      .then((data) => dispatch({ type: 'GET_BOOKS', payload: data }))
+      .then((data) => dispatch({ type: 'GET_BOOKS_SUCCESS', data }))
   }
-
   useEffect(() => {
     getBooks()
   }, [])
 
-  const handleFillCreateModal = (e) => {
-    const { name, value } = e.target
-    dispatch({ type: 'FILL_CREATE_MODAL',
-      payload: {
-        ...state.formCreateModal,
-        [name]: value,
-      },
-    })
-  }
-
-  const addBook = () => {
-    dispatch({ type: 'ADD_BOOK' })
-    fetch('http://localhost:1717/books/create', {
-      method: 'POST',
-      body: JSON.stringify(state.formCreateModal),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(() => getBooks())
-    dispatch({ type: 'SET_SHOW_CREATE_MODAL', payload: false })
-  }
-
-  const handleEdit = (book) => {
-    dispatch({ type: 'OPEN_EDIT_MODAL', payload: book })
-    dispatch({ type: 'SET_SHOW_EDIT_MODAL', payload: true })
-  }
-
-  const handleFillEditModal = (e) => {
-    const { name, value } = e.target
-    dispatch({ type: 'FILL_EDIT_MODAL',
-      payload: {
-        ...state.editState,
-        [name]: value,
-      },
-    })
-  }
-
-  const handleClickFavoriteEditModal = () => {
-    dispatch({ type: 'FILL_EDIT_MODAL',
-      payload: {
-        ...state.editState,
-        isFavorite: !state.editState.isFavorite,
-      },
-    })
-  }
-
   const handleClickFavorite = (book) => {
-    dispatch({ type: 'LIKE_BOOK' })
     fetch(`http://localhost:1717/books/update/${book.id}`, {
       method: 'PUT',
       body: JSON.stringify({ isFavorite: !book.isFavorite }),
@@ -151,13 +103,55 @@ const App = () => {
       .then(() => getBooks())
   }
 
+  const handleFillCreateForm = (e) => {
+    const { name, value } = e.target
+    dispatch({ type: 'CREATE_MODAL_CHANGE_FORM',
+      fieldName: name,
+      value,
+    })
+  }
+
+  const addBook = () => {
+    fetch('http://localhost:1717/books/create', {
+      method: 'POST',
+      body: JSON.stringify(state.createModal.form),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => getBooks())
+    dispatch({ type: 'CREATE_MODAL_SET_SHOW', isShow: false })
+  }
+
+  const handleOpenEditModal = (book) => {
+    dispatch({ type: 'EDIT_MODAL_SET_SHOW', isShow: true })
+    dispatch({ type: 'EDIT_MODAL_CHANGE_FORM',
+      fieldName: 'name',
+      value: book.name,
+    })
+    dispatch({ type: 'EDIT_MODAL_CHANGE_FORM', fieldName: 'author', value: book.author })
+    dispatch({ type: 'EDIT_MODAL_CHANGE_FORM', fieldName: 'isFavorite', value: book.isFavorite })
+    dispatch({ type: 'EDIT_MODAL_CHANGE_FORM', fieldName: 'id', value: book.id })
+  }
+
+  const handleFillEditForm = (e) => {
+    const { name, value } = e.target
+    dispatch({ type: 'EDIT_MODAL_CHANGE_FORM',
+      fieldName: name,
+      value,
+    })
+  }
+
+  const handleClickFavoriteEditModal = () => {
+    dispatch({ type: 'EDIT_MODAL_CHANGE_FORM', fieldName: 'isFavorite', value: !state.editModal.form.isFavorite })
+  }
+
   const saveEdit = () => {
-    dispatch({ type: 'SAVE_EDIT_BOOK' })
     const body = {
-      ...state.editState,
+      ...state.editModal.form,
     }
     delete body.id
-    fetch(`http://localhost:1717/books/update/${state.editState.id}`, {
+    fetch(`http://localhost:1717/books/update/${state.editModal.form.id}`, {
       method: 'PUT',
       body: JSON.stringify(body),
       headers: {
@@ -165,11 +159,10 @@ const App = () => {
       },
     })
       .then(() => getBooks())
-    dispatch({ type: 'SET_SHOW_EDIT_MODAL', payload: false })
+    dispatch({ type: 'EDIT_MODAL_SET_SHOW', isShow: false })
   }
 
   const deleteBook = (book) => {
-    dispatch({ type: 'SAVE_EDIT_BOOK' })
     fetch(`http://localhost:1717/books/delete/${book.id}`, {
       method: 'DELETE',
     })
@@ -180,27 +173,27 @@ const App = () => {
     <Theme>
       <Header logo="BookList" title="Books" />
       <StyledBtn
-        onClick={() => dispatch({ type: 'SET_SHOW_CREATE_MODAL', payload: true })}
+        onClick={() => dispatch({ type: 'CREATE_MODAL_SET_SHOW', isShow: true })}
       >Add Book
       </StyledBtn>
       <Container>
         <BooksRow
           books={state.books}
-          onEdit={handleEdit}
+          onEdit={handleOpenEditModal}
           handleClickFavorite={handleClickFavorite}
           deleteBook={deleteBook}
         />
         <CreateModal
-          isShow={state.isShowCreateModal}
-          onClose={() => dispatch({ type: 'SET_SHOW_CREATE_MODAL', payload: false })}
-          handleFillCreateModal={handleFillCreateModal}
+          isShow={state.createModal.isShow}
+          onClose={() => dispatch({ type: 'CREATE_MODAL_SET_SHOW', isShow: false })}
+          handleFillCreateForm={handleFillCreateForm}
           addBook={addBook}
         />
         <EditModal
-          isShow={state.isShowEditModal}
-          onClose={() => dispatch({ type: 'SET_SHOW_EDIT_MODAL', payload: false })}
-          editState={state.editState}
-          handleFillEditModal={handleFillEditModal}
+          isShow={state.editModal.isShow}
+          onClose={() => dispatch({ type: 'EDIT_MODAL_SET_SHOW', isShow: false })}
+          editState={state.editModal.form}
+          handleFillEditForm={handleFillEditForm}
           saveEdit={saveEdit}
           handleClickFavoriteEditModal={handleClickFavoriteEditModal}
         />
