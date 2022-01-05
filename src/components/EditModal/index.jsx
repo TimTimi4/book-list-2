@@ -39,11 +39,18 @@ const StyledLIkeIcon = styled(Like)`
   position: absolute;
   top:10px;
   left: 8px;
-  color: ${({ theme }) => theme.colors.unactiveIcon};
+  color: ${({ theme, $isFavorite }) => ($isFavorite ? theme.colors.activeIcon : theme.colors.unactiveIcon)};
   cursor: pointer;
 `
 
-const EditModal = ({ isShow, onClose }) => (
+const EditModal = ({
+  isShow,
+  onClose,
+  handleFillEditModal,
+  editState,
+  saveEdit,
+  handleClickFavoriteEditModal,
+}) => (
   <Modal
     isShow={isShow}
     onClose={onClose}
@@ -53,18 +60,26 @@ const EditModal = ({ isShow, onClose }) => (
         type="text"
         name="name"
         placeholder="Book Name"
+        value={editState ? editState.name : ''}
+        onChange={handleFillEditModal}
       />
       <StyledInput
         type="text"
         name="author"
         placeholder="Author"
+        value={editState ? editState.author : ''}
+        onChange={handleFillEditModal}
       />
       <StyledButton
         type="submit"
+        onClick={saveEdit}
       >Save
       </StyledButton>
       <IconBox>
-        <StyledLIkeIcon />
+        <StyledLIkeIcon
+          onClick={handleClickFavoriteEditModal}
+          $isFavorite={!!editState?.isFavorite}
+        />
       </IconBox>
     </StyledForm>
   </Modal>
