@@ -34,7 +34,6 @@ const BooksRow = ({ onClick, books }) => (
           <TableCell align="center">Like</TableCell>
           <TableCell align="center">Edit</TableCell>
           <TableCell align="center">Delete</TableCell>
-
         </TableRow>
       </TableHead>
       <TableBody>

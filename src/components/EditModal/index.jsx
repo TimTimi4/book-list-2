@@ -39,7 +39,7 @@ const StyledLIkeIcon = styled(Like)`
   position: absolute;
   top:10px;
   left: 8px;
-  color: ${({ theme }) => theme.colors.unactiveIcon};
+  color: ${({ theme, $isFavorite }) => ($isFavorite ? theme.colors.activeIcon : theme.colors.unactiveIcon)};
   cursor: pointer;
 `
 
