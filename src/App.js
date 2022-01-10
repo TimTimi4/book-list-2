@@ -9,6 +9,7 @@ import BooksRow from './components/BooksRow'
 import CreateModal from './components/CreateModal'
 import EditModal from './components/EditModal'
 import { getBooks } from './store/actions/books'
+import { showModal } from './store/actions/modal'
 
 const StyledBtn = styled(Btn)`
   margin: 30px 30px 0px auto;
@@ -17,21 +18,27 @@ const StyledBtn = styled(Btn)`
 const App = () => {
   const dispatch = useDispatch()
   const books = useSelector((state) => state.books)
+  const modal = useSelector((state) => state.modal)
+  console.log(modal)
   console.log(books)
 
   useEffect(() => {
     dispatch(getBooks())
   }, [])
 
+  const showCreateModal = (modalName, isShow, form) => {
+    dispatch(showModal(modalName, isShow, form))
+  }
+
   return (
     <Theme>
       <Header logo="BookList" title="Books" />
-      <StyledBtn>Add Book
+      <StyledBtn onClick={() => showCreateModal(modal.createBook, true, modal.createBook.form)}>
+        Add Book
       </StyledBtn>
       <Container>
         <BooksRow
           books={books.books}
-          // onClick={() => setShowEditModal(true)}
         />
         <CreateModal />
         <EditModal />

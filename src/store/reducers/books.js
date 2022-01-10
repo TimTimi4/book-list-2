@@ -37,7 +37,6 @@ function reducer(state = initialState, action) {
     case GET_BOOKS_LOADING:
       return {
         ...state,
-        books: action.data,
         getBooks: {
           ...initalStatuses,
           loading: true,
@@ -46,13 +45,13 @@ function reducer(state = initialState, action) {
     case GET_BOOKS_FAILED:
       return {
         ...state,
-        books: action.data,
         getBooks: {
           ...initalStatuses,
           failed: true,
           error: action.error,
         },
       }
+
     case CREATE_BOOKS_SUCCESS:
       return {
         ...state,
@@ -64,7 +63,6 @@ function reducer(state = initialState, action) {
     case CREATE_BOOKS_LOADING:
       return {
         ...state,
-        books: action.data,
         createBook: {
           ...initalStatuses,
           loading: true,
@@ -73,7 +71,6 @@ function reducer(state = initialState, action) {
     case CREATE_BOOKS_FAILED:
       return {
         ...state,
-        books: action.data,
         createBook: {
           ...initalStatuses,
           failed: true,

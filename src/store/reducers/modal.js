@@ -48,7 +48,7 @@ function reducer(state = initialState, action) {
         },
       }
     default:
-      return 'error'
+      return state
   }
 }
 
