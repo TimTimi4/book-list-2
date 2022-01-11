@@ -39,7 +39,7 @@ function reducer(state = initialState, action) {
     case MODAL_CHANGE_FORM_FIELD:
       return {
         ...state,
-        [action.formName]: {
+        [action.modalName]: {
           ...state[action.modalName],
           form: {
             ...state[action.modalName].form,

@@ -2,9 +2,9 @@ import {
   GET_BOOKS_SUCCESS,
   GET_BOOKS_LOADING,
   GET_BOOKS_FAILED,
-  CREATE_BOOKS_SUCCESS,
-  CREATE_BOOKS_LOADING,
-  CREATE_BOOKS_FAILED }
+  CREATE_BOOK_SUCCESS,
+  CREATE_BOOK_LOADING,
+  CREATE_BOOK_FAILED }
   from '../constants'
 
 const initalStatuses = {
@@ -52,7 +52,7 @@ function reducer(state = initialState, action) {
         },
       }
 
-    case CREATE_BOOKS_SUCCESS:
+    case CREATE_BOOK_SUCCESS:
       return {
         ...state,
         createBook: {
@@ -60,7 +60,7 @@ function reducer(state = initialState, action) {
           success: true,
         },
       }
-    case CREATE_BOOKS_LOADING:
+    case CREATE_BOOK_LOADING:
       return {
         ...state,
         createBook: {
@@ -68,7 +68,7 @@ function reducer(state = initialState, action) {
           loading: true,
         },
       }
-    case CREATE_BOOKS_FAILED:
+    case CREATE_BOOK_FAILED:
       return {
         ...state,
         createBook: {

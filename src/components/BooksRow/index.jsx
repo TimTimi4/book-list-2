@@ -39,7 +39,7 @@ const BooksRow = ({ onClick, books }) => (
       <TableBody>
         {books.map((book) => (
           <TableRow
-            key={book.name}
+            key={book.id}
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
           >
             <TableCell align="left">{book.name}</TableCell>
