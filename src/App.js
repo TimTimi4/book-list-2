@@ -10,6 +10,7 @@ import CreateModal from './components/CreateModal'
 import EditModal from './components/EditModal'
 import { getBooks, addBook, deleteBook, editBook, setFavorite } from './store/actions/books'
 import { showModal, changeModalForm } from './store/actions/modal'
+import CircularUnderLoad from './components/Loader'
 
 const StyledBtn = styled(Btn)`
   margin: 30px 30px 0px auto;
@@ -62,6 +63,7 @@ const App = () => {
     dispatch(deleteBook(book))
   }
 
+  console.log(books)
   return (
     <Theme>
       <Header logo="BookList" title="Books" />
@@ -70,13 +72,19 @@ const App = () => {
       >
         Add Book
       </StyledBtn>
+      {(books.getBooks.success === false
+        && books.getBooks.loading === true) && <CircularUnderLoad />}
       <Container>
+        {(books.getBooks.success === true)
+        && (
         <BooksRow
           books={books.books}
           handleDeleteBook={handleDeleteBook}
           handleEditBook={handleEditBook}
           handleClickFavorite={handleClickFavorite}
         />
+        )}
+        {(books.getBooks.failed === true) && <div>ERROR</div> }
         <CreateModal
           isShow={modal.createBook.isShow}
           onClose={() => handleOpenModal('createBook', false)}
