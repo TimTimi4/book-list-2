@@ -8,7 +8,7 @@ import Btn from './components/Button'
 import BooksRow from './components/BooksRow'
 import CreateModal from './components/CreateModal'
 import EditModal from './components/EditModal'
-import { getBooks, addBook } from './store/actions/books'
+import { getBooks, addBook, deleteBook, editBook, setFavorite } from './store/actions/books'
 import { showModal, changeModalForm } from './store/actions/modal'
 
 const StyledBtn = styled(Btn)`
@@ -24,17 +24,42 @@ const App = () => {
     dispatch(getBooks())
   }, [])
 
+  const handleClickFavorite = (book) => {
+    dispatch(setFavorite(book))
+  }
+
   const handleOpenModal = (modalName, isShow) => {
     dispatch(showModal(modalName, isShow))
+  }
+
+  const saveNewBook = () => {
+    dispatch(addBook(modal.createBook.form))
+    dispatch(showModal('createBook', false))
+  }
+
+  const handleEditBook = (book) => {
+    dispatch(showModal('editBook', true))
+    dispatch(changeModalForm('editBook', 'name', book.name))
+    dispatch(changeModalForm('editBook', 'author', book.author))
+    dispatch(changeModalForm('editBook', 'id', book.id))
+    dispatch(changeModalForm('editBook', 'isFavorite', book.isFavorite))
+  }
+
+  const clickFavoriteEditForm = () => {
+    dispatch(changeModalForm('editBook', 'isFavorite', !modal.editBook.form.isFavorite))
+  }
+
+  const saveEditBook = () => {
+    dispatch(editBook(modal.editBook.form))
+    dispatch(showModal('editBook', false))
   }
 
   const handleChangeModalForm = (modalName, fieldName, value) => {
     dispatch(changeModalForm(modalName, fieldName, value))
   }
 
-  const createBook = () => {
-    dispatch(addBook(modal.createBook.form))
-    dispatch(showModal('createBook', false))
+  const handleDeleteBook = (book) => {
+    dispatch(deleteBook(book))
   }
 
   return (
@@ -47,18 +72,24 @@ const App = () => {
       </StyledBtn>
       <Container>
         <BooksRow
-          onClick={() => handleOpenModal('editBook', true)}
           books={books.books}
+          handleDeleteBook={handleDeleteBook}
+          handleEditBook={handleEditBook}
+          handleClickFavorite={handleClickFavorite}
         />
         <CreateModal
           isShow={modal.createBook.isShow}
           onClose={() => handleOpenModal('createBook', false)}
           handleChangeModalForm={(e) => handleChangeModalForm('createBook', e.target.name, e.target.value)}
-          createBook={createBook}
+          saveNewBook={saveNewBook}
         />
         <EditModal
           isShow={modal.editBook.isShow}
-          onClose={createBook}
+          onClose={() => handleOpenModal('editBook', false)}
+          handleChangeModalForm={(e) => handleChangeModalForm('editBook', e.target.name, e.target.value)}
+          editState={modal.editBook.form}
+          saveEditBook={saveEditBook}
+          clickFavoriteEditForm={clickFavoriteEditForm}
         />
       </Container>
     </Theme>

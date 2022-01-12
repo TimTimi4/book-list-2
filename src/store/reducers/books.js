@@ -4,7 +4,13 @@ import {
   GET_BOOKS_FAILED,
   CREATE_BOOK_SUCCESS,
   CREATE_BOOK_LOADING,
-  CREATE_BOOK_FAILED }
+  CREATE_BOOK_FAILED,
+  DELETE_BOOK_SUCCESS,
+  DELETE_BOOK_LOADING,
+  DELETE_BOOK_FAILED,
+  EDIT_BOOK_SUCCESS,
+  EDIT_BOOK_LOADING,
+  EDIT_BOOK_FAILED }
   from '../constants'
 
 const initalStatuses = {
@@ -72,6 +78,58 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         createBook: {
+          ...initalStatuses,
+          failed: true,
+          error: action.error,
+        },
+      }
+
+    case EDIT_BOOK_SUCCESS:
+      return {
+        ...state,
+        editBook: {
+          ...initalStatuses,
+          success: true,
+        },
+      }
+    case EDIT_BOOK_LOADING:
+      return {
+        ...state,
+        editBook: {
+          ...initalStatuses,
+          loading: true,
+        },
+      }
+    case EDIT_BOOK_FAILED:
+      return {
+        ...state,
+        editBook: {
+          ...initalStatuses,
+          failed: true,
+          error: action.error,
+        },
+      }
+
+    case DELETE_BOOK_SUCCESS:
+      return {
+        ...state,
+        deleteBook: {
+          ...initalStatuses,
+          success: true,
+        },
+      }
+    case DELETE_BOOK_LOADING:
+      return {
+        ...state,
+        deleteBook: {
+          ...initalStatuses,
+          loading: true,
+        },
+      }
+    case DELETE_BOOK_FAILED:
+      return {
+        ...state,
+        deleteBook: {
           ...initalStatuses,
           failed: true,
           error: action.error,

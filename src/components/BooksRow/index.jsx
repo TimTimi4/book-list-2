@@ -24,7 +24,7 @@ const StyledTrashIcon = styled(Trash)`
   cursor: pointer;
 `
 
-const BooksRow = ({ onClick, books }) => (
+const BooksRow = ({ handleEditBook, books, handleDeleteBook, handleClickFavorite }) => (
   <TableContainer component={Paper}>
     <Table sx={{ minWidth: 650 }} aria-label="a dense table">
       <TableHead>
@@ -44,9 +44,9 @@ const BooksRow = ({ onClick, books }) => (
           >
             <TableCell align="left">{book.name}</TableCell>
             <TableCell align="left">{book.author}</TableCell>
-            <TableCell align="center"><StyledLIkeIcon $isFavorite={book.isFavorite} /></TableCell>
-            <TableCell align="center"><StyledEditIcon onClick={onClick} /></TableCell>
-            <TableCell align="center"><StyledTrashIcon /></TableCell>
+            <TableCell align="center"><StyledLIkeIcon $isFavorite={book.isFavorite} onClick={() => handleClickFavorite(book)} /></TableCell>
+            <TableCell align="center"><StyledEditIcon onClick={() => handleEditBook(book)} /></TableCell>
+            <TableCell align="center"><StyledTrashIcon onClick={() => handleDeleteBook(book)} /></TableCell>
           </TableRow>
         ))}
       </TableBody>

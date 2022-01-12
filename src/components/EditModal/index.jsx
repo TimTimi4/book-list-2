@@ -43,31 +43,45 @@ const StyledLIkeIcon = styled(Like)`
   cursor: pointer;
 `
 
-const EditModal = ({ isShow, onClose }) => (
-  <Modal
-    isShow={isShow}
-    onClose={onClose}
-  >
-    <StyledForm action="#">
-      <StyledInput
-        type="text"
-        name="name"
-        placeholder="Book Name"
-      />
-      <StyledInput
-        type="text"
-        name="author"
-        placeholder="Author"
-      />
-      <StyledButton
-        type="submit"
-      >Save
-      </StyledButton>
-      <IconBox>
-        <StyledLIkeIcon />
-      </IconBox>
-    </StyledForm>
-  </Modal>
+const EditModal = ({
+  isShow,
+  onClose,
+  handleChangeModalForm,
+  editState,
+  saveEditBook,
+  clickFavoriteEditForm }) => (
+    <Modal
+      isShow={isShow}
+      onClose={onClose}
+    >
+      <StyledForm action="#">
+        <StyledInput
+          type="text"
+          name="name"
+          placeholder="Book Name"
+          value={editState ? editState.name : ''}
+          onChange={handleChangeModalForm}
+        />
+        <StyledInput
+          type="text"
+          name="author"
+          placeholder="Author"
+          value={editState ? editState.author : ''}
+          onChange={handleChangeModalForm}
+        />
+        <StyledButton
+          type="submit"
+          onClick={saveEditBook}
+        >Save
+        </StyledButton>
+        <IconBox>
+          <StyledLIkeIcon
+            $isFavorite={!!editState?.isFavorite}
+            onClick={clickFavoriteEditForm}
+          />
+        </IconBox>
+      </StyledForm>
+    </Modal>
 )
 
 export default EditModal

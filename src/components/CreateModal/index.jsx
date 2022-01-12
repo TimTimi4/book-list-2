@@ -25,7 +25,7 @@ const StyledButton = styled(Button)`
   margin: 20px 0px 0px 0px;
 `
 
-const CreateModal = ({ isShow, onClose, handleChangeModalForm, createBook }) => (
+const CreateModal = ({ isShow, onClose, handleChangeModalForm, saveNewBook }) => (
   <Modal
     isShow={isShow}
     onClose={onClose}
@@ -45,7 +45,7 @@ const CreateModal = ({ isShow, onClose, handleChangeModalForm, createBook }) => 
       />
       <StyledButton
         type="submit"
-        onClick={createBook}
+        onClick={saveNewBook}
       >Add Book
       </StyledButton>
     </StyledForm>

@@ -1,4 +1,4 @@
-import { MODAL_SET_SHOW, MODAL_CHANGE_FORM_FIELD } from '../constants'
+import { MODAL_SET_SHOW, MODAL_CHANGE_FORM_FIELD, INIT_MODAL_FORM } from '../constants'
 
 export const showModal = (modalName, isShow) => ({
   type: MODAL_SET_SHOW,
@@ -11,4 +11,10 @@ export const changeModalForm = (modalName, fieldName, value) => ({
   modalName,
   fieldName,
   value,
+})
+
+export const initModalForm = (modalName, form) => ({
+  type: INIT_MODAL_FORM,
+  form,
+  modalName,
 })
